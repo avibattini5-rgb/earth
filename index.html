@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta
+        name="description
+
+        content="EARTH // 2086 — An immersive planetary exploration system."
+    >
+
+    <meta name="theme-color" content="#02050a">
+
+    <title>EARTH // 2086 — Planetary Exploration System</title>
+
+    <!-- Premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.min.js"></script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/three@0.180.0/examples/js/controls/OrbitControls.js"
+    ></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================================
+         APPLICATION LOADER
+    ========================================== -->
+
+    <div id="bootScreen" class="boot-screen">
+
+        <div class="boot-inner">
+
+            <div class="boot-mark">
+                EARTH
+                <span>// 2086</span>
+            </div>
+
+            <div class="boot-line">
+                <span id="bootStatus">INITIALIZING PLANETARY SYSTEM</span>
+                <span id="bootPercent">00%</span>
+            </div>
+
+            <div class="boot-progress">
+                <div id="bootProgressBar"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         GLOBAL BACKGROUND
+    ========================================== -->
+
+    <div class="space-background">
+
+        <div class="stars stars-one"></div>
+        <div class="stars stars-two"></div>
+        <div class="stars stars-three"></div>
+
+        <div class="space-glow"></div>
+
+    </div>
+
+
+    <!-- =========================================
+         APP
+    ========================================== -->
+
+    <div id="app" class="app">
+
+
+        <!-- =====================================
+             TOP NAVIGATION
+        ====================================== -->
+
+        <header class="topbar">
+
+            <a href="#home" class="brand">
+
+                <div class="brand-name">
+                    EARTH
+                    <span>// 2086</span>
+                </div>
+
+                <div class="brand-subtitle">
+                    PLANETARY EXPLORATION SYSTEM
+                </div>
+
+            </a>
+
+
+            <nav class="main-nav">
+
+                <a href="#home" class="nav-item active">
+                    EXPLORE
+                </a>
+
+                <a href="#countries" class="nav-item">
+                    COUNTRIES
+                </a>
+
+                <a href="#cities" class="nav-item">
+                    CITIES
+                </a>
+
+                <a href="#statistics" class="nav-item">
+                    STATISTICS
+                </a>
+
+                <a href="#about" class="nav-item">
+                    ABOUT
+                </a>
+
+            </nav>
+
+
+            <div class="topbar-actions">
+
+                <button
+                    id="searchButton"
+                    class="icon-button"
+                    aria-label="Search"
+                >
+                    <i data-lucide="search"></i>
+                </button>
+
+                <button
+                    id="menuButton"
+                    class="icon-button mobile-only"
+                    aria-label="Open menu"
+                >
+                    <i data-lucide="menu"></i>
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================
+             MOBILE NAVIGATION
+        ====================================== -->
+
+        <aside id="mobileNavigation" class="mobile-navigation">
+
+            <button
+                id="mobileClose"
+                class="mobile-close"
+                aria-label="Close navigation"
+            >
+                <i data-lucide="x"></i>
+            </button>
+
+            <div class="mobile-brand">
+                EARTH <span>// 2086</span>
+            </div>
+
+            <nav>
+
+                <a href="#home">EXPLORE</a>
+                <a href="#countries">COUNTRIES</a>
+                <a href="#cities">CITIES</a>
+                <a href="#statistics">STATISTICS</a>
+                <a href="#about">ABOUT</a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- =====================================
+             SEARCH OVERLAY
+        ====================================== -->
+
+        <div id="searchOverlay" class="search-overlay">
+
+            <div class="search-overlay-inner">
+
+                <button
+                    id="searchClose"
+                    class="search-close"
+                    aria-label="Close search"
+                >
+                    <i data-lucide="x"></i>
+                </button>
+
+                <div class="search-eyebrow">
+                    PLANETARY SEARCH
+                </div>
+
+                <h2>
+                    FIND A
+                    <span>LOCATION</span>
+                </h2>
+
+                <div class="global-search">
+
+                    <i data-lucide="search"></i>
+
+                    <input
+                        id="globalSearchInput"
+                        type="search"
+                        autocomplete="off"
+                        placeholder="Search country, city or location..."
+                    >
+
+                    <span class="search-shortcut">
+                        ESC
+                    </span>
+
+                </div>
+
+                <div
+                    id="globalSearchResults"
+                    class="global-search-results"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             MAIN CONTENT
+        ====================================== -->
+
+        <main>
+
+
+            <!-- =================================
+                 HERO / PLANET VIEW
+            ================================== -->
+
+            <section
+                id="home"
+                class="hero-section"
+            >
+
+                <div class="hero-grid"></div>
+
+
+                <!-- LEFT INFORMATION COLUMN -->
+
+                <div class="hero-left">
+
+                    <div class="system-label">
+                        <span class="status-dot"></span>
+                        PLANETARY SYSTEM ONLINE
+                    </div>
+
+
+                    <div class="planet-stats">
+
+                        <div class="planet-stat">
+
+                            <strong>195</strong>
+
+                            <span>COUNTRIES</span>
+
+                        </div>
+
+
+                        <div class="planet-stat">
+
+                            <strong>7</strong>
+
+                            <span>CONTINENTS</span>
+
+                        </div>
+
+
+                        <div class="planet-stat">
+
+                            <strong>8.2B</strong>
+
+                            <span>POPULATION</span>
+
+                        </div>
+
+
+                        <div class="planet-stat">
+
+                            <strong>24</strong>
+
+                            <span>TIME ZONES</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="planet-status-card">
+
+                        <div class="status-indicator">
+                            <span></span>
+                        </div>
+
+                        <div>
+
+                            <strong>PLANET STATUS</strong>
+
+                            <small>
+                                ALL SYSTEMS OPERATIONAL
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CENTRAL EARTH -->
+
+                <div
+                    id="earthContainer"
+                    class="earth-container"
+                >
+
+                    <canvas id="earthCanvas"></canvas>
+
+                    <div class="earth-atmosphere"></div>
+
+                    <div class="earth-hud">
+
+                        <div class="hud-line hud-line-left"></div>
+
+                        <div class="hud-line hud-line-right"></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="hero-search">
+
+                    <i data-lucide="search"></i>
+
+                    <input
+                        id="heroSearchInput"
+                        type="search"
+                        autocomplete="off"
+                        placeholder="Search location..."
+                    >
+
+                    <button
+                        id="heroSearchButton"
+                        aria-label="Search location"
+                    >
+                        <i data-lucide="arrow-up-right"></i>
+                    </button>
+
+                    <div
+                        id="heroSearchResults"
+                        class="hero-search-results"
+                    ></div>
+
+                </div>
+
+
+                <!-- EARTH CONTROLS -->
+
+                <div class="earth-controls">
+
+                    <button
+                        id="resetEarth"
+                        class="earth-control"
+                        title="Reset globe"
+                    >
+                        <i data-lucide="globe-2"></i>
+                    </button>
+
+                    <button
+                        id="toggle3D"
+                        class="earth-control active"
+                        title="3D mode"
+                    >
+                        <span>3D</span>
+                    </button>
+
+                    <button
+                        id="zoomOut"
+                        class="earth-control"
+                        title="Zoom out"
+                    >
+                        <i data-lucide="minus"></i>
+                    </button>
+
+                    <button
+                        id="zoomIn"
+                        class="earth-control"
+                        title="Zoom in"
+                    >
+                        <i data-lucide="plus"></i>
+                    </button>
+
+                </div>
+
+
+                <!-- EXPLORE HINT -->
+
+                <div class="hero-hint">
+
+                    <span>DRAG TO ROTATE</span>
+
+                    <span class="hint-divider"></span>
+
+                    <span>SCROLL TO ZOOM</span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 COUNTRY EXPLORER
+            ================================== -->
+
+            <section
+                id="countries"
+                class="content-section country-section"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            PLANETARY EXPLORER
+                        </span>
+
+                        <h2>
+                            Explore the
+                            <span>World</span>
+                        </h2>
+
+                    </div>
+
+                    <button
+                        id="viewAllCountries"
+                        class="outline-button"
+                    >
+                        VIEW ALL COUNTRIES
+                        <i data-lucide="arrow-up-right"></i>
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="countryGrid"
+                    class="country-grid"
+                >
+
+                    <!-- Dynamic country cards -->
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 SELECTED COUNTRY EXPERIENCE
+            ================================== -->
+
+            <section
+                id="countryProfile"
+                class="country-profile-section"
+            >
+
+                <div class="country-profile-image">
+
+                    <img
+                        id="profileImage"
+                        src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1800&q=85"
+                        alt="Country landscape"
+                    >
+
+                    <div class="profile-image-overlay"></div>
+
+                </div>
+
+
+                <div class="country-profile-content">
+
+                    <div class="breadcrumb">
+                        <span>ASIA</span>
+                        <i data-lucide="chevron-right"></i>
+                        <span id="profileRegion">
+                            INDIA
+                        </span>
+                    </div>
+
+
+                    <div class="profile-title">
+
+                        <span class="eyebrow">
+                            REPUBLIC OF
+                        </span>
+
+                        <h2 id="profileCountryName">
+                            INDIA
+                        </h2>
+
+                        <p id="profileDescription">
+                            The land of extraordinary
+                            diversity, ancient civilizations
+                            and living cultural traditions.
+                        </p>
+
+                    </div>
+
+
+                    <div class="profile-meta">
+
+                        <div>
+                            <i data-lucide="map-pin"></i>
+
+                            <span>
+                                <small>CAPITAL</small>
+                                <strong id="profileCapital">
+                                    NEW DELHI
+                                </strong>
+                            </span>
+                        </div>
+
+
+                        <div>
+                            <i data-lucide="languages"></i>
+
+                            <span>
+                                <small>LANGUAGES</small>
+                                <strong id="profileLanguage">
+                                    HINDI / ENGLISH
+                                </strong>
+                            </span>
+                        </div>
+
+
+                        <div>
+                            <i data-lucide="banknote"></i>
+
+                            <span>
+                                <small>CURRENCY</small>
+                                <strong id="profileCurrency">
+                                    INR
+                                </strong>
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-numbers">
+
+                        <div>
+                            <strong id="profileArea">
+                                3.28M
+                            </strong>
+                            <span>KM² AREA</span>
+                        </div>
+
+                        <div>
+                            <strong id="profilePopulation">
+                                1.4B+
+                            </strong>
+                            <span>POPULATION</span>
+                        </div>
+
+                        <div>
+                            <strong id="profileStates">
+                                28
+                            </strong>
+                            <span>STATES</span>
+                        </div>
+
+                        <div>
+                            <strong id="profileTerritories">
+                                8
+                            </strong>
+                            <span>UNION TERRITORIES</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 CITIES
+            ================================== -->
+
+            <section
+                id="cities"
+                class="content-section cities-section"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            URBAN EXPLORATION
+                        </span>
+
+                        <h2>
+                            Popular
+                            <span>Cities</span>
+                        </h2>
+
+                        <p>
+                            Explore major cities across
+                            the planet.
+                        </p>
+
+                    </div>
+
+                    <button class="outline-button">
+                        VIEW ALL CITIES
+                        <i data-lucide="arrow-up-right"></i>
+                    </button>
+
+                </div>
+
+
+                <div id="cityGrid" class="city-grid">
+
+                    <article class="city-card">
+
+                        <div class="city-image">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1595658658481-d53d3f999875?auto=format&fit=crop&w=900&q=85"
+                                alt="Mumbai"
+                            >
+
+                        </div>
+
+                        <div class="city-info">
+
+                            <span>MUMBAI</span>
+                            <small>MAHARASHTRA</small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="city-card">
+
+                        <div class="city-image">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=900&q=85"
+                                alt="New Delhi"
+                            >
+
+                        </div>
+
+                        <div class="city-info">
+
+                            <span>NEW DELHI</span>
+                            <small>DELHI</small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="city-card">
+
+                        <div class="city-image">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=900&q=85"
+                                alt="Bangalore"
+                            >
+
+                        </div>
+
+                        <div class="city-info">
+
+                            <span>BANGALORE</span>
+                            <small>KARNATAKA</small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="city-card">
+
+                        <div class="city-image">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1558431382-27e303142255?auto=format&fit=crop&w=900&q=85"
+                                alt="Kolkata"
+                            >
+
+                        </div>
+
+                        <div class="city-info">
+
+                            <span>KOLKATA</span>
+                            <small>WEST BENGAL</small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="city-card">
+
+                        <div class="city-image">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1506461883276-594a12b11cf3?auto=format&fit=crop&w=900&q=85"
+                                alt="Chennai"
+                            >
+
+                        </div>
+
+                        <div class="city-info">
+
+                            <span>CHENNAI</span>
+                            <small>TAMIL NADU</small>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <!-- QUICK DATA -->
+
+                <div class="quick-data">
+
+                    <div class="quick-data-item">
+
+                        <i data-lucide="clock-3"></i>
+
+                        <span>
+                            <small>TIME ZONE</small>
+                            <strong>IST (UTC+5:30)</strong>
+                        </span>
+
+                    </div>
+
+
+                    <div class="quick-data-item">
+
+                        <i data-lucide="car"></i>
+
+                        <span>
+                            <small>DRIVING SIDE</small>
+                            <strong>LEFT</strong>
+                        </span>
+
+                    </div>
+
+
+                    <div class="quick-data-item">
+
+                        <i data-lucide="phone"></i>
+
+                        <span>
+                            <small>CALLING CODE</small>
+                            <strong>+91</strong>
+                        </span>
+
+                    </div>
+
+
+                    <div class="quick-data-item">
+
+                        <i data-lucide="globe"></i>
+
+                        <span>
+                            <small>INTERNET TLD</small>
+                            <strong>.IN</strong>
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 MAP LAYERS
+            ================================== -->
+
+            <section class="map-section">
+
+                <div class="map-layer-panel">
+
+                    <div class="panel-heading">
+
+                        <span>LAYERS</span>
+
+                        <i data-lucide="chevron-right"></i>
+
+                    </div>
+
+
+                    <button
+                        class="layer-button active"
+                        data-layer="political"
+                    >
+                        <i data-lucide="map"></i>
+                        POLITICAL
+                    </button>
+
+
+                    <button
+                        class="layer-button"
+                        data-layer="physical"
+                    >
+                        <i data-lucide="mountain"></i>
+                        PHYSICAL
+                    </button>
+
+
+                    <button
+                        class="layer-button"
+                        data-layer="population"
+                    >
+                        <i data-lucide="users"></i>
+                        POPULATION
+                    </button>
+
+
+                    <button
+                        class="layer-button"
+                        data-layer="timezones"
+                    >
+                        <i data-lucide="clock-3"></i>
+                        TIME ZONES
+                    </button>
+
+
+                    <button
+                        class="layer-button"
+                        data-layer="cities"
+                    >
+                        <i data-lucide="map-pin"></i>
+                        CITIES
+                    </button>
+
+
+                    <button
+                        class="layer-button"
+                        data-layer="mountains"
+                    >
+                        <i data-lucide="triangle"></i>
+                        MOUNTAINS
+                    </button>
+
+
+                    <button
+                        class="layer-button"
+                        data-layer="oceans"
+                    >
+                        <i data-lucide="waves"></i>
+                        OCEANS
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="worldMap"
+                    class="world-map"
+                >
+
+                    <div class="map-grid"></div>
+
+                    <div class="map-placeholder">
+
+                        <div class="map-orbit orbit-one"></div>
+                        <div class="map-orbit orbit-two"></div>
+
+                        <div class="map-title">
+                            PLANETARY
+                            <span>MAP</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="map-tools">
+
+                    <button>
+                        <i data-lucide="maximize"></i>
+                    </button>
+
+                    <button>
+                        <i data-lucide="layers-3"></i>
+                    </button>
+
+                    <button>
+                        <i data-lucide="locate-fixed"></i>
+                    </button>
+
+                    <button>
+                        <i data-lucide="more-horizontal"></i>
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 PLANET STATISTICS
+            ================================== -->
+
+            <section
+                id="statistics"
+                class="content-section statistics-section"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            PLANETARY DATA
+                        </span>
+
+                        <h2>
+                            Earth
+                            <span>Statistics</span>
+                        </h2>
+
+                        <p>
+                            Global planetary data and
+                            geographic measurements.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-grid">
+
+                    <div class="large-stat-card">
+
+                        <span>TOTAL POPULATION</span>
+
+                        <strong>8.2B</strong>
+
+                        <div class="mini-chart">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="large-stat-card">
+
+                        <span>COUNTRIES</span>
+
+                        <strong>195</strong>
+
+                        <div class="mini-chart">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="large-stat-card">
+
+                        <span>MAJOR CITIES</span>
+
+                        <strong>10K+</strong>
+
+                        <div class="mini-chart">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="large-stat-card">
+
+                        <span>LAND AREA</span>
+
+                        <strong>510M</strong>
+
+                        <small>KM²</small>
+
+                    </div>
+
+
+                    <div class="large-stat-card">
+
+                        <span>OCEAN COVERAGE</span>
+
+                        <strong>71%</strong>
+
+                        <div class="progress-ring">
+                            <div></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="data-panels">
+
+                    <div class="data-panel">
+
+                        <div class="data-panel-header">
+
+                            <span>
+                                POPULATION BY CONTINENT
+                            </span>
+
+                            <button>
+                                <i data-lucide="more-horizontal"></i>
+                            </button>
+
+                        </div>
+
+
+                        <div class="bar-chart">
+
+                            <div class="bar-row">
+                                <span>ASIA</span>
+                                <div>
+                                    <i style="width: 92%"></i>
+                                </div>
+                                <strong>4.6B</strong>
+                            </div>
+
+                            <div class="bar-row">
+                                <span>AFRICA</span>
+                                <div>
+                                    <i style="width: 45%"></i>
+                                </div>
+                                <strong>1.4B</strong>
+                            </div>
+
+                            <div class="bar-row">
+                                <span>EUROPE</span>
+                                <div>
+                                    <i style="width: 24%"></i>
+                                </div>
+                                <strong>748M</strong>
+                            </div>
+
+                            <div class="bar-row">
+                                <span>NORTH AMERICA</span>
+                                <div>
+                                    <i style="width: 18%"></i>
+                                </div>
+                                <strong>592M</strong>
+                            </div>
+
+                            <div class="bar-row">
+                                <span>SOUTH AMERICA</span>
+                                <div>
+                                    <i style="width: 14%"></i>
+                                </div>
+                                <strong>430M</strong>
+                            </div>
+
+                            <div class="bar-row">
+                                <span>OCEANIA</span>
+                                <div>
+                                    <i style="width: 6%"></i>
+                                </div>
+                                <strong>42M</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="data-panel">
+
+                        <div class="data-panel-header">
+
+                            <span>
+                                COUNTRIES BY CONTINENT
+                            </span>
+
+                            <button>
+                                <i data-lucide="more-horizontal"></i>
+                            </button>
+
+                        </div>
+
+
+                        <div class="donut-container">
+
+                            <div class="donut-chart">
+
+                                <div class="donut-center">
+                                    <strong>195</strong>
+                                    <span>TOTAL</span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="donut-legend">
+
+                                <div>
+                                    <i></i>
+                                    <span>ASIA</span>
+                                    <strong>49</strong>
+                                </div>
+
+                                <div>
+                                    <i></i>
+                                    <span>AFRICA</span>
+                                    <strong>54</strong>
+                                </div>
+
+                                <div>
+                                    <i></i>
+                                    <span>EUROPE</span>
+                                    <strong>44</strong>
+                                </div>
+
+                                <div>
+                                    <i></i>
+                                    <span>NORTH AMERICA</span>
+                                    <strong>23</strong>
+                                </div>
+
+                                <div>
+                                    <i></i>
+                                    <span>SOUTH AMERICA</span>
+                                    <strong>12</strong>
+                                </div>
+
+                                <div>
+                                    <i></i>
+                                    <span>OCEANIA</span>
+                                    <strong>14</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 ABOUT
+            ================================== -->
+
+            <section
+                id="about"
+                class="about-section"
+            >
+
+                <div class="about-inner">
+
+                    <span class="eyebrow">
+                        EARTH // 2086
+                    </span>
+
+                    <h2>
+                        One planet.
+                        <br>
+                        <span>Endless stories.</span>
+                    </h2>
+
+                    <p>
+                        An immersive exploration system designed
+                        to make our planet feel closer, more
+                        understandable and more alive.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+
+        <!-- =====================================
+             FOOTER
+        ====================================== -->
+
+        <footer class="footer">
+
+            <div class="footer-brand">
+                EARTH // 2086
+            </div>
+
+            <div class="footer-meta">
+                PLANETARY EXPLORATION SYSTEM
+            </div>
+
+            <div class="footer-status">
+                <span></span>
+                SYSTEM ONLINE
+            </div>
+
+        </footer>
+
+
+    </div>
+
+
+    <!-- =========================================
+         COUNTRY DETAIL MODAL
+    ========================================== -->
+
+    <div
+        id="countryModal"
+        class="country-modal"
+        aria-hidden="true"
+    >
+
+        <div class="country-modal-backdrop"></div>
+
+        <div class="country-modal-panel">
+
+            <button
+                id="countryModalClose"
+                class="modal-close"
+                aria-label="Close"
+            >
+                <i data-lucide="x"></i>
+            </button>
+
+            <div class="modal-country-header">
+
+                <span
+                    id="modalCountryRegion"
+                    class="eyebrow"
+                >
+                    ASIA
+                </span>
+
+                <h2 id="modalCountryName">
+                    INDIA
+                </h2>
+
+                <p id="modalCountryOfficial">
+                    REPUBLIC OF INDIA
+                </p>
+
+            </div>
+
+
+            <div class="modal-country-grid">
+
+                <div class="modal-info-card">
+
+                    <span>CAPITAL</span>
+                    <strong id="modalCapital">
+                        NEW DELHI
+                    </strong>
+
+                </div>
+
+                <div class="modal-info-card">
+
+                    <span>POPULATION</span>
+                    <strong id="modalPopulation">
+                        1.4B+
+                    </strong>
+
+                </div>
+
+                <div class="modal-info-card">
+
+                    <span>AREA</span>
+                    <strong id="modalArea">
+                        3.28M KM²
+                    </strong>
+
+                </div>
+
+                <div class="modal-info-card">
+
+                    <span>CURRENCY</span>
+                    <strong id="modalCurrency">
+                        INR
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-description">
+
+                <span>OVERVIEW</span>
+
+                <p id="modalDescription">
+                    Country information will appear here.
+                </p>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    id="exploreCountryButton"
+                    class="primary-button"
+                >
+                    EXPLORE COUNTRY
+                    <i data-lucide="arrow-right"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
+
+    <script src="script.js"></script>
+
+</body>
+</html>
